@@ -30,6 +30,7 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "App::combinesheets",
   "PREREQ_PM" => {
+    "Algorithm::Loops" => 0,
     "App::Cmd::Simple" => 0,
     "Data::Dumper" => 0,
     "File::BOM" => 0,
@@ -46,7 +47,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.2.1",
+  "VERSION" => "0.2.2",
   "test" => {
     "TESTS" => "t/*.t"
   }

@@ -11,7 +11,7 @@ use strict;
 
 package App::combinesheets;
 {
-  $App::combinesheets::VERSION = '0.2.1';
+  $App::combinesheets::VERSION = '0.2.2';
 }
 use base 'App::Cmd::Simple';
 
@@ -23,8 +23,8 @@ use Text::CSV_XS;
 use File::Spec;
 use File::Temp;
 use File::BOM qw( :all );
+use Algorithm::Loops qw( NestedLoops );
 use autouse 'IO::CaptureOutput' => qw(capture_exec);
-use autouse 'Data::Dumper';
 
 # reserved keywords in the configuration
 use constant {
@@ -99,6 +99,7 @@ sub validate_args {
 
     # show version and exit
     if ($opt->version) {
+        ## no critic
         no strict;    # because the $VERSION will be added only when
         no warnings;  # the distribution is fully built up
         print "$VERSION\n";
@@ -218,7 +219,7 @@ sub execute {
                 $col->{ignored} = 1;
                 next;
             }
-            eval "require $module";
+            eval "require $module";  ## no critic
             if ($@) {
                 warn "[WR14] Cannot load module '$module': $@. Column '" . $col->{CFG_OUT_COL()} . " ignored\n";
                 $col->{ignored} = 1;
@@ -341,40 +342,82 @@ sub execute {
         unless scalar @header_line == 0;
 
     # combine all inputs and make output lines
-    my @output_line = ();
     foreach my $matching_content (sort keys %{ $inputs->{$primary_input}->{INPUT_CONTENT()} }) {
         # $matching_content is, for example, a publication title ("An Atlas of....")
-        my @output_line = ();
-        my @calculated = ();   # indeces of the yet-to-be-calculated elements
-        my $column_count = -1;
-        foreach my $col (@$wanted_cols) {         # $col defines what data to push into @output_line
-            $column_count++;
+
+        # inputs may have more lines with the same value in the matching columns
+        # therefore, extract first the matching lines from all inputs
+        my $lines_to_combine = [];
+        my $inputs_to_combine = {};  # keys are inputs' CFG_IDs, values are indeces into $lines_to_combine
+
+        foreach my $col (@$wanted_cols) {
             if ($col->{CFG_TYPE()} eq CFG_MATCH) {
-                my $input = $inputs->{ $col->{CFG_ID()} };  # $input defines where to get output data from
-                my $input_line = $input->{INPUT_CONTENT()}->{$matching_content};
-                my $idx = $input->{INPUT_HEADERS()}->{ $col->{CFG_IN_COL()} };
-                my $value = $input_line->[$idx] || '';
-                push (@output_line, $value);
-            } else {
-                push (@calculated, $column_count);
-                push (@output_line, '');
-            }
-        }
-        # insert the calculated columns
-        foreach my $idx (@calculated) {
-            if ($wanted_cols->[$idx]->{CFG_TYPE()} eq CFG_PROG) {
-                $output_line[$idx] = call_prog ($wanted_cols->[$idx], \@header_line, \@output_line);
-            } elsif ($wanted_cols->[$idx]->{CFG_TYPE()} eq CFG_PROGS) {
-                $output_line[$idx] = call_prog_simple ($wanted_cols->[$idx]);
-            } elsif ($wanted_cols->[$idx]->{CFG_TYPE()} eq CFG_PERL) {
-                $output_line[$idx] = call_perl ($wanted_cols->[$idx], \@header_line, \@output_line);
+                unless (exists $inputs_to_combine->{ $col->{CFG_ID()} }) {
+                    # remember the same lines (from the same input) only once
+                    my $input = $inputs->{ $col->{CFG_ID()} };
+                    push (@$lines_to_combine, $input->{INPUT_CONTENT()}->{$matching_content} || [undef]);
+                    $inputs_to_combine->{ $col->{CFG_ID()} } = $#$lines_to_combine;
+                }
             }
         }
 
-        print $combined join ("\t", @output_line) . "\n"
-            unless scalar @output_line == 0;
+        # make all combinantions of matching lines
+
+        # let's have 3 inputs, identified by K, L and M
+        # there are three matching lines in K, two in L and one in M:
+        # my $lines_to_combine = [
+        #       [ "line1", "line2", "line3", ], # from input K
+        #       [ "lineX", "lineY", ],          # from input L
+        #       [ "lineQ", ],                   # from input M
+        #       );
+        # my $inputs_to_combine = { K => 0, L => 1, M => 2 };
+        #
+        # the subroutine create_output_line() will be called 6 times
+        # with the following arguments:
+        #   line1, lineX, lineQ
+        #   line1, lineY, lineQ
+        #   line2, lineX, lineQ
+        #   line2, lineY, lineQ
+        #   line3, lineX, lineQ
+        #   line3, lineY, lineQ
+
+        NestedLoops ($lines_to_combine,
+                     sub {
+                         my @input_lines = @_;
+                         my @output_line = ();
+                         my @calculated = ();   # indeces of the yet-to-be-calculated elements
+                         my $column_count = -1;
+                         foreach my $col (@$wanted_cols) { # $col defines what data to push into @output_line
+                             $column_count++;
+                             if ($col->{CFG_TYPE()} eq CFG_MATCH) {
+                                 my $input = $inputs->{ $col->{CFG_ID()} };
+                                 my $input_line = @input_lines[$inputs_to_combine->{ $col->{CFG_ID()} }];
+                                 # use Data::Dumper;
+                                 # print Dumper (\@input_lines);
+                                 # print Dumper ($inputs_to_combine);
+                                 my $idx = $input->{INPUT_HEADERS()}->{ $col->{CFG_IN_COL()} };
+                                 my $value = $input_line->[$idx] || '';
+                                 push (@output_line, $value);
+                             } else {
+                                 push (@calculated, $column_count);
+                                 push (@output_line, '');
+                             }
+                         }
+                         # insert the calculated columns
+                         foreach my $idx (@calculated) {
+                             if ($wanted_cols->[$idx]->{CFG_TYPE()} eq CFG_PROG) {
+                                 $output_line[$idx] = call_prog ($wanted_cols->[$idx], \@header_line, \@output_line);
+                             } elsif ($wanted_cols->[$idx]->{CFG_TYPE()} eq CFG_PROGS) {
+                                 $output_line[$idx] = call_prog_simple ($wanted_cols->[$idx]);
+                             } elsif ($wanted_cols->[$idx]->{CFG_TYPE()} eq CFG_PERL) {
+                                 $output_line[$idx] = call_perl ($wanted_cols->[$idx], \@header_line, \@output_line);
+                             }
+                         }
+
+                         print $combined join ("\t", @output_line) . "\n"
+                             unless scalar @output_line == 0;
+                     });
     }
-
     close $combined if $opt_outfile;
 }
 
@@ -389,7 +432,7 @@ sub execute {
 sub call_perl {
     my ($column, $header_line, $data_line) = @_;
 
-    no strict;
+    no strict;  ## no critic
     my $what_to_call = $column->{PERL_DETAILS()}->{what_to_call};
     my $how_to_call  = $column->{PERL_DETAILS()}->{how_to_call};
     my $module       = $column->{PERL_DETAILS()}->{module};
@@ -602,10 +645,12 @@ sub read_tsv_content {
     my $content = {};
     my $line_count = 0;
     while (my $line = <$fh>) {
-        next if $line_count++ == 0;
-        $line =~ s{(\r|\n)+$}{};   # remove newlines of any kind
+        next if $line_count++ == 0;  # skip header line
+        next if $line =~ m{^\s*$};   # ignore empty lines
+        $line =~ s{(\r|\n)+$}{};     # remove newlines of any kind
         my @data = split (m{\t}, $line);
-        $content->{ $data[$matched_index] } = [@data];
+        $content->{ $data[$matched_index] } = [] unless $content->{ $data[$matched_index] };
+        push (@{ $content->{ $data[$matched_index] } }, [@data]);
     }
     close $fh;
     return $content;
@@ -632,7 +677,8 @@ sub read_csv_content {
     $parser->add_trigger (after_parse => sub {
         my ($self, $data) = @_;
         return if $count_lines++ == 0;   # headers are ignored
-        $content->{ $data->[$matched_index] } = $data;
+        $content->{ $data->[$matched_index] } = [] unless $content->{ $data->[$matched_index] };
+        push (@{ $content->{ $data->[$matched_index] } }, $data);
                           });
     # read CSV input (the result is not used here; everything is done in triggers)
     $parser->read_file ($file);
@@ -650,7 +696,7 @@ App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 =head1 VERSION
 
-version 0.2.1
+version 0.2.2
 
 =head1 SYNOPSIS
 
@@ -693,12 +739,16 @@ which spreadsheet is used as the first one (a primary one). If the
 persons.tsv is the first, the result will be (which columns are
 included in the result will be described later in this document):
 
+   combinesheets -cfg config.cfg -in PERSON=persons.tsv CAR=cars.csv
+
    First name  Surname    Model  Sex  Nickname  Age  Year  Owned by
    Jitka       Gudernova  Mini   F              56   1968  Gudernova
    Jan         Novak             M    Honza     52
    Martin      Senger     Skoda  M    Tulak     61   2002  Senger
 
 Or, if the cars.tsv is the first, the result will be:
+
+   combinesheets -cfg config.cfg -in CAR=cars.csv PERSON=persons.tsv
 
    First name  Surname    Model  Sex  Nickname  Age  Year  Owned by
    Jitka       Gudernova  Mini   F              56   1968  Gudernova
@@ -715,11 +765,59 @@ column that was used as a matching column in the primary input.
 The information which columns should be used to match the input
 spreadsheets and which columns should appear in the resulting
 spreadsheet is read from a configuration file (see the C<-config>
-argument).
+ - or C<-cfg> - argument).
 
 The command-line arguments and options can be specified with single or
 double dash. Most of them can be abbreviated to the nearest non-biased
 length. They are case-sensitive.
+
+=head2 Duplicated values in the matching columns
+
+If there are repeated (the same) values in the column that serves as
+matching criterion then the resulting spreadsheet will have as many
+output lines (for a particular matching value) as is the number of all
+combinations of the lines with that matching values in all input
+spreadsheets. For example, let's have C<books.tsv> and C<authors.tsv>,
+assuming that a book can have more authors and any author can
+contribute to any number of books:
+
+   books.tsv:
+   Title   Note    Author
+   Book 1  from B1-a       Kim
+   Book 2  from B2-b       Kim
+   Book 3  from B3-c       Katrin
+   Book 1  from B1-d       Blanka
+   Book 2  from B2-e       Katrin
+
+   authors.tsv:
+   Age     Name
+   28      Kim
+   20      Katrin
+   30      Blanka
+   50      Lazy author
+
+The output (again, depending on which input is considered a primary
+input) will be (a list of included column is defined in the
+configuration file - see later):
+
+   combinesheets -cfg books_to_authors.cfg -in BOOK=books.tsv AUTHOR=authors.tsv
+
+   Name    Title   Age Note
+   Blanka  Book 1  30  from B1-d
+   Katrin  Book 3  20  from B3-c
+   Katrin  Book 2  20  from B2-e
+   Kim     Book 1  28  from B1-a
+   Kim     Book 2  28  from B2-b
+
+   combinesheets -cfg books_to_authors.cfg -in AUTHOR=authors.tsv BOOK=books.tsv
+
+   Name        Title   Age  Note
+   Blanka      Book 1  30   from B1-d
+   Katrin      Book 3  20   from B3-c
+   Katrin      Book 2  20   from B2-e
+   Kim         Book 1  28   from B1-a
+   Kim         Book 2  28   from B2-b
+   Lazy author         50
 
 =head1 ADVANCED USAGE
 
@@ -1167,7 +1265,7 @@ Print the version and exit.
 
 It contains a path that is used when looking for external programs
 (when the reserved words PROG or PROGS are used). For example, the
-C<examples> directory in the source distributon of this package has an
+C<examples> directory in the source distribution of this package has an
 external program C<age.sh>. The full invocation can be done by:
 
    COMBINE_SHEETS_EXT_PATH=examples bin/combinesheets -cfg examples/cars.cfg --inputs CAR=examples/cars.csv
@@ -1183,6 +1281,7 @@ to be installed:
    File::BOM
    Getopt::Long::Descriptive
    Pod::Usage
+   Algorithm::Loops
 
 Optionally (if your configuration file uses the reserved word PROG or
 PROGS for calculated columns):

@@ -20,6 +20,7 @@ meta-spec:
   version: 1.4
 name: App-combinesheets
 requires:
+  Algorithm::Loops: 0
   App::Cmd::Simple: 0
   Data::Dumper: 0
   File::BOM: 0
@@ -38,7 +39,7 @@ requires:
 resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=App-combinesheets
   homepage: http://search.cpan.org/dist/App-combinesheets
-version: 0.2.1
+version: 0.2.2
 x_Dist_Zilla:
   plugins:
     -
@@ -134,33 +135,37 @@ x_Dist_Zilla:
       name: ReadmeFromPod
       version: 0.16
     -
-      class: Dist::Zilla::Plugin::EOLTests
-      name: EOLTests
-      version: 0.02
-    -
-      class: Dist::Zilla::Plugin::Test::PodSpelling
-      name: Test::PodSpelling
-      version: 2.002001
-    -
-      class: Dist::Zilla::Plugin::NoTabsTests
-      name: NoTabsTests
-      version: 0.01
+      class: Dist::Zilla::Plugin::CheckEmacsChangeLog
+      name: CheckEmacsChangeLog
+      version: 0.0.1
     -
       class: Dist::Zilla::Plugin::Test::Compile
       name: Test::Compile
       version: 1.112820
     -
-      class: Dist::Zilla::Plugin::MetaTests
-      name: MetaTests
-      version: 4.300009
+      class: Dist::Zilla::Plugin::EOLTests
+      name: EOLTests
+      version: 0.02
+    -
+      class: Dist::Zilla::Plugin::NoTabsTests
+      name: NoTabsTests
+      version: 0.01
     -
       class: Dist::Zilla::Plugin::PodSyntaxTests
       name: PodSyntaxTests
       version: 4.300009
     -
+      class: Dist::Zilla::Plugin::MetaTests
+      name: MetaTests
+      version: 4.300009
+    -
       class: Dist::Zilla::Plugin::Test::Perl::Critic
       name: Test::Perl::Critic
       version: 2.112410
+    -
+      class: Dist::Zilla::Plugin::Test::PodSpelling
+      name: Test::PodSpelling
+      version: 2.002001
     -
       class: Dist::Zilla::Plugin::MetaResources
       name: MetaResources

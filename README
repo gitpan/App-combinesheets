@@ -2,7 +2,7 @@ NAME
     App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 VERSION
-    version 0.2.1
+    version 0.2.2
 
 SYNOPSIS
        combinesheets -h
@@ -43,12 +43,16 @@ DESCRIPTION
     is the first, the result will be (which columns are included in the
     result will be described later in this document):
 
+       combinesheets -cfg config.cfg -in PERSON=persons.tsv CAR=cars.csv
+
        First name  Surname    Model  Sex  Nickname  Age  Year  Owned by
        Jitka       Gudernova  Mini   F              56   1968  Gudernova
        Jan         Novak             M    Honza     52
        Martin      Senger     Skoda  M    Tulak     61   2002  Senger
 
     Or, if the cars.tsv is the first, the result will be:
+
+       combinesheets -cfg config.cfg -in CAR=cars.csv PERSON=persons.tsv
 
        First name  Surname    Model  Sex  Nickname  Age  Year  Owned by
        Jitka       Gudernova  Mini   F              56   1968  Gudernova
@@ -64,12 +68,59 @@ DESCRIPTION
 
     The information which columns should be used to match the input
     spreadsheets and which columns should appear in the resulting
-    spreadsheet is read from a configuration file (see the "-config"
-    argument).
+    spreadsheet is read from a configuration file (see the "-config" - or
+    "-cfg" - argument).
 
     The command-line arguments and options can be specified with single or
     double dash. Most of them can be abbreviated to the nearest non-biased
     length. They are case-sensitive.
+
+  Duplicated values in the matching columns
+    If there are repeated (the same) values in the column that serves as
+    matching criterion then the resulting spreadsheet will have as many
+    output lines (for a particular matching value) as is the number of all
+    combinations of the lines with that matching values in all input
+    spreadsheets. For example, let's have "books.tsv" and "authors.tsv",
+    assuming that a book can have more authors and any author can contribute
+    to any number of books:
+
+       books.tsv:
+       Title   Note    Author
+       Book 1  from B1-a       Kim
+       Book 2  from B2-b       Kim
+       Book 3  from B3-c       Katrin
+       Book 1  from B1-d       Blanka
+       Book 2  from B2-e       Katrin
+
+       authors.tsv:
+       Age     Name
+       28      Kim
+       20      Katrin
+       30      Blanka
+       50      Lazy author
+
+    The output (again, depending on which input is considered a primary
+    input) will be (a list of included column is defined in the
+    configuration file - see later):
+
+       combinesheets -cfg books_to_authors.cfg -in BOOK=books.tsv AUTHOR=authors.tsv
+
+       Name    Title   Age Note
+       Blanka  Book 1  30  from B1-d
+       Katrin  Book 3  20  from B3-c
+       Katrin  Book 2  20  from B2-e
+       Kim     Book 1  28  from B1-a
+       Kim     Book 2  28  from B2-b
+
+       combinesheets -cfg books_to_authors.cfg -in AUTHOR=authors.tsv BOOK=books.tsv
+
+       Name        Title   Age  Note
+       Blanka      Book 1  30   from B1-d
+       Katrin      Book 3  20   from B3-c
+       Katrin      Book 2  20   from B2-e
+       Kim         Book 1  28   from B1-a
+       Kim         Book 2  28   from B2-b
+       Lazy author         50
 
 ADVANCED USAGE
     Additionally to the merging columns from one or more spreadsheets, this
@@ -466,7 +517,7 @@ ENVIRONMENT VARIABLES
    COMBINE_SHEETS_EXT_PATH
     It contains a path that is used when looking for external programs (when
     the reserved words PROG or PROGS are used). For example, the "examples"
-    directory in the source distributon of this package has an external
+    directory in the source distribution of this package has an external
     program "age.sh". The full invocation can be done by:
 
        COMBINE_SHEETS_EXT_PATH=examples bin/combinesheets -cfg examples/cars.cfg --inputs CAR=examples/cars.csv
@@ -481,6 +532,7 @@ DEPENDENCIES
        File::BOM
        Getopt::Long::Descriptive
        Pod::Usage
+       Algorithm::Loops
 
     Optionally (if your configuration file uses the reserved word PROG or
     PROGS for calculated columns):
