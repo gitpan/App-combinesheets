@@ -97,7 +97,7 @@ my @command = ( $prg, '-config', $config_file, '-inputs', 'dummy' );
 my ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_bad_exit_code ($exit_code, @command);
 ok ($stderr =~ m{\[ER01\]},
-    msgcmd ("Expected error ER01 for ", @command));
+    msgcmd ("Expected error ER01 for ", @command, $stderr));
 ok ($stderr =~ m{\[WR01\]} && $stderr =~ m{'0},
     msgcmd ("Expected warning WR01 ('0) for ", @command));
 ok ($stderr =~ m{\[WR01\]} && $stderr =~ m{'jit'},
