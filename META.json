@@ -35,6 +35,7 @@
             "autouse" : "0",
             "base" : "0",
             "constant" : "0",
+            "perl" : "5.008",
             "strict" : "0",
             "warnings" : "0"
          }
@@ -45,9 +46,11 @@
             "English" : "0",
             "File::Basename" : "0",
             "File::Find" : "0",
+            "File::Which" : "0",
             "FindBin" : "0",
             "IO::CaptureOutput" : "0",
-            "Test::More" : "0"
+            "Test::More" : "0",
+            "Test::Requires" : "0"
          }
       }
    },
@@ -59,7 +62,7 @@
       },
       "homepage" : "http://search.cpan.org/dist/App-combinesheets"
    },
-   "version" : "0.2_3",
+   "version" : "0.2_4",
    "x_Dist_Zilla" : {
       "plugins" : [
          {
@@ -184,6 +187,11 @@
             "version" : "0.0.1"
          },
          {
+            "class" : "Dist::Zilla::Plugin::MinimumPerl",
+            "name" : "MinimumPerl",
+            "version" : "1.003"
+         },
+         {
             "class" : "Dist::Zilla::Plugin::Test::Compile",
             "name" : "Test::Compile",
             "version" : "1.112820"
@@ -216,7 +224,7 @@
          {
             "class" : "Dist::Zilla::Plugin::Test::PodSpelling",
             "name" : "Test::PodSpelling",
-            "version" : "2.002001"
+            "version" : "2.002002"
          },
          {
             "class" : "Dist::Zilla::Plugin::MetaResources",

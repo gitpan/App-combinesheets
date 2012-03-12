@@ -8,6 +8,7 @@ use FindBin qw( $Bin );
 use File::Spec;
 use File::Basename;
 use Cwd;
+use File::Which;
 use lib "$Bin/../lib";
 
 #-----------------------------------------------------------------
@@ -38,8 +39,8 @@ sub tested_prg {
     }
 
     # 2) try to find it on system PATH
-    $full_name = `which $prgname`;
-    return $full_name if $full_name;
+    # $full_name = which ($prgname);
+    # return $full_name if $full_name;
 
     # 3) try to find it in the current directory
     $full_name = File::Spec->catfile ('./', $prgname);

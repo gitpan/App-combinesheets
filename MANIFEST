@@ -6,10 +6,8 @@ META.json
 META.yml
 Makefile.PL
 README
-a.tmp
 bin/combinesheets
 dist.ini
-e.tmp
 examples/Airport.pm
 examples/age.sh
 examples/cars.cfg
@@ -52,3 +50,4 @@ t/release-distmeta.t
 t/release-eol.t
 t/release-no-tabs.t
 t/release-pod-syntax.t
+this-pod-2-html.pl

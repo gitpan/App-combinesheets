@@ -11,7 +11,7 @@ use strict;
 
 package App::combinesheets;
 {
-  $App::combinesheets::VERSION = '0.2_3';
+  $App::combinesheets::VERSION = '0.2_4';
 }
 use base 'App::Cmd::Simple';
 
@@ -696,7 +696,7 @@ App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 =head1 VERSION
 
-version 0.2_3
+version 0.2_4
 
 =head1 SYNOPSIS
 
@@ -840,7 +840,7 @@ with totals of columns.
 
 If specified, an external program is invoked for each row. It can be
 specified either by a keyword B<PROG> or by a keyword B<PROGS> - see
-syntax in the L<configuration|config_config_file> section. In both cases, the
+syntax in the I<configuration> section. In both cases, the
 value of the standard output of these programs become the value of the
 calculated column (a trailing newline of this standard output is
 removed and other newlines are replaced by spaces).
@@ -851,7 +851,7 @@ any knowledge for which row it has been invoked. Its usage is,
 therefore, for column values that are not dependent on other values
 from the spreadsheet. For example, for the C<cars.tsv> shown above,
 you can add a column C<Last updated> by calling a UNIX program C<date>
-- again, see an example the L<configuration|config_config_file>
+- again, see an example the I<configuration>
 section.
 
 A program defined by the B<PROG> is called with one argument which is
@@ -880,7 +880,7 @@ each row with the three arguments:
 A hashref with information about the current column. Not often used
 but may be handy if the same subroutine deals with more columns and,
 therefore, needs to know for which column it was invoked. See the
-I<flights> example in the L<configuration|config_config_file> section.
+I<flights> example in the I<configuration> section.
 
 =item 2
 
@@ -907,7 +907,7 @@ described above. However, if your definition is rather:
 then the C<test> subroutine is considered a Perl method and its first
 argument is the module/class name. It is up to you to decide how you
 want/need to write your functions. Again, an example is available in
-the L<configuration|config_config_file> section.
+the I<configuration> section.
 
 The return value of the subroutine will become a new value in the
 calculated column. Do not return undef but rather an empty string if
@@ -918,7 +918,7 @@ write an external program (perhaps also in Perl) doing exactly the
 same? The Perl module stays in the memory for the whole time of
 processing all input rows and, therefore, you can re-use some
 calculations done for the previous rows. An example about it
-(C<flights>) is given in the L<configuration|config_config_file>
+(C<flights>) is given in the I<configuration>
 section.
 
 =head1 ARGUMENTS and OPTIONS
@@ -1002,7 +1002,7 @@ these two columns will be merged into one resulting row).
 B<Advanced configuration>
 
 If you want to add so-called I<calculated columns> as described in the
-L<Advanced usage> you need to use few additional reserved words in the
+L</"ADVANCED USAGE"> you need to use few additional reserved words in the
 configuration file. These words are B<PROG>, B<PROGS> and/or
 B<PERL>. They are used in the place where the new calculated column
 should be placed. Their lines have the program name or the Perl
@@ -1350,7 +1350,7 @@ Martin Senger <martin.senger@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Martin Senger, CBRC-KAUST (Computational Biology Research Center; King Abdullah University of Science and Technology) All Rights Reserved..
+This software is copyright (c) 2012 by Martin Senger, CBRC - KAUST (Computational Biology Research Center - King Abdullah University of Science and Technology) All Rights Reserved..
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

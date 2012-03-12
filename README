@@ -2,7 +2,7 @@ NAME
     App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 VERSION
-    version 0.2_3
+    version 0.2_4
 
 SYNOPSIS
        combinesheets -h
@@ -140,7 +140,7 @@ ADVANCED USAGE
   Calculated columns by external programs
     If specified, an external program is invoked for each row. It can be
     specified either by a keyword PROG or by a keyword PROGS - see syntax in
-    the configuration section. In both cases, the value of the standard
+    the *configuration* section. In both cases, the value of the standard
     output of these programs become the value of the calculated column (a
     trailing newline of this standard output is removed and other newlines
     are replaced by spaces).
@@ -151,7 +151,7 @@ ADVANCED USAGE
     for column values that are not dependent on other values from the
     spreadsheet. For example, for the "cars.tsv" shown above, you can add a
     column "Last updated" by calling a UNIX program "date" - again, see an
-    example the configuration section.
+    example the *configuration* section.
 
     A program defined by the PROG is called with one argument which is a
     filename. This file contains the current row; each of its lines has two,
@@ -173,7 +173,7 @@ ADVANCED USAGE
     1   A hashref with information about the current column. Not often used
         but may be handy if the same subroutine deals with more columns and,
         therefore, needs to know for which column it was invoked. See the
-        *flights* example in the configuration section.
+        *flights* example in the *configuration* section.
 
     2   An arrayref with all column names.
 
@@ -194,7 +194,7 @@ ADVANCED USAGE
     then the "test" subroutine is considered a Perl method and its first
     argument is the module/class name. It is up to you to decide how you
     want/need to write your functions. Again, an example is available in the
-    configuration section.
+    *configuration* section.
 
     The return value of the subroutine will become a new value in the
     calculated column. Do not return undef but rather an empty string if the
@@ -205,7 +205,7 @@ ADVANCED USAGE
     The Perl module stays in the memory for the whole time of processing all
     input rows and, therefore, you can re-use some calculations done for the
     previous rows. An example about it ("flights") is given in the
-    configuration section.
+    *configuration* section.
 
 ARGUMENTS and OPTIONS
     -config <config-file>
@@ -273,7 +273,7 @@ ARGUMENTS and OPTIONS
         Advanced configuration
 
         If you want to add so-called *calculated columns* as described in
-        the "Advanced usage" you need to use few additional reserved words
+        the "ADVANCED USAGE" you need to use few additional reserved words
         in the configuration file. These words are PROG, PROGS and/or PERL.
         They are used in the place where the new calculated column should be
         placed. Their lines have the program name or the Perl subroutine
@@ -581,8 +581,8 @@ AUTHOR
     Martin Senger <martin.senger@gmail.com>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2012 by Martin Senger, CBRC-KAUST
-    (Computational Biology Research Center; King Abdullah University of
+    This software is copyright (c) 2012 by Martin Senger, CBRC - KAUST
+    (Computational Biology Research Center - King Abdullah University of
     Science and Technology) All Rights Reserved..
 
     This is free software; you can redistribute it and/or modify it under
