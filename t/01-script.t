@@ -1,7 +1,7 @@
 #!perl -w
 
 #use Test::More qw(no_plan);
-use Test::More tests => 97;
+use Test::More tests => 98;
 
 use IO::CaptureOutput qw(capture_exec);
 use FindBin qw( $Bin );
@@ -91,11 +91,16 @@ diag( "Testing script $prg" );
 my $perl5lib = $ENV{PERL5LIB} || '';
 $ENV{PERL5LIB} = join (":", @INC);
 
+# test for the simplest invocation (using the -h option)
+my @command = ( $prg, '-h' );
+my ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
+is ($stderr, '', msgcmd ("Unexpected STDERR output", @command));
+
 # test for error conditions
 my $config_file = File::Spec->catfile (test_file(), 'errors.cfg');
 
-my @command = ( $prg, '-config', $config_file, '-inputs', 'dummy' );
-my ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
+@command = ( $prg, '-config', $config_file, '-inputs', 'dummy' );
+($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_bad_exit_code ($exit_code, @command);
 ok ($stderr =~ m{\[ER01\]},
     msgcmd ("Expected error ER01 for ", @command, $stderr));

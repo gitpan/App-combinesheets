@@ -2,7 +2,7 @@ NAME
     App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 VERSION
-    version 0.2_4
+    version 0.2.5
 
 SYNOPSIS
        combinesheets -h

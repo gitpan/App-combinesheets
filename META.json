@@ -54,7 +54,7 @@
          }
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "mailto" : "perlbug@perl.org",
@@ -62,7 +62,7 @@
       },
       "homepage" : "http://search.cpan.org/dist/App-combinesheets"
    },
-   "version" : "0.2_4",
+   "version" : "0.2.5",
    "x_Dist_Zilla" : {
       "plugins" : [
          {
