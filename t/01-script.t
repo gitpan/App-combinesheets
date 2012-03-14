@@ -86,10 +86,12 @@ sub msgcmd {
 ok(1);
 my $prg = tested_prg ('combinesheets');
 diag( "Testing script $prg" );
+diag ("Perl: $^V from $^X\n\t" . join ("\n\t", @INC));
 
 # because we will be calling an external script
 my $perl5lib = $ENV{PERL5LIB} || '';
-$ENV{PERL5LIB} = join (":", @INC);
+$ENV{PERL5LIB} .= ':lib';
+#$ENV{PERL5LIB} = join (":", @INC);
 
 # test for the simplest invocation (using the -h option)
 my @command = ( $prg, '-h' );
