@@ -94,7 +94,7 @@ $ENV{PERL5LIB} .= ':lib';
 #$ENV{PERL5LIB} = join (":", @INC);
 
 # test for the simplest invocation (using the -h option)
-my @command = ( $prg, '-h' );
+my @command = ( $^X, $prg, '-h' );
 my ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 is ($stderr, '', msgcmd ("Unexpected STDERR output", @command));
 

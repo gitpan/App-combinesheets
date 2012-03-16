@@ -42,7 +42,7 @@ requires:
 resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=App-combinesheets
   homepage: http://search.cpan.org/dist/App-combinesheets
-version: 0.2.6
+version: 0.2_7
 x_Dist_Zilla:
   plugins:
     -

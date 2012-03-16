@@ -12,7 +12,7 @@ use warnings;
 use strict;
 package main;
 {
-  $main::VERSION = '0.2.6';
+  $main::VERSION = '0.2_7';
 }  # this is here to make Dist:Dzilla's PkgVersion happy
 
 use App::combinesheets;
@@ -27,7 +27,7 @@ App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 =head1 VERSION
 
-version 0.2.6
+version 0.2_7
 
 =head1 AUTHOR
 
