@@ -11,7 +11,7 @@ use strict;
 
 package App::combinesheets;
 {
-  $App::combinesheets::VERSION = '0.2_7';
+  $App::combinesheets::VERSION = '0.2_8';
 }
 use base 'App::Cmd::Simple';
 
@@ -696,7 +696,7 @@ App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 =head1 VERSION
 
-version 0.2_7
+version 0.2_8
 
 =head1 SYNOPSIS
 

@@ -101,7 +101,7 @@ is ($stderr, '', msgcmd ("Unexpected STDERR output", @command));
 # test for error conditions
 my $config_file = File::Spec->catfile (test_file(), 'errors.cfg');
 
-@command = ( $prg, '-config', $config_file, '-inputs', 'dummy' );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', 'dummy' );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_bad_exit_code ($exit_code, @command);
 ok ($stderr =~ m{\[ER01\]},
@@ -130,7 +130,7 @@ my $person_and_car_results =
 
 $config_file = File::Spec->catfile (test_file(), 'config.cfg');
 
-@command = ( $prg, '-config', $config_file, '-inputs', "PERSON=$persons" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "PERSON=$persons" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
 ok ($stderr =~ m{\[WR07\]} && $stderr =~ m{'CHILD'},
@@ -149,7 +149,7 @@ is_deeply (cut_into_table ($stdout),
            ],
            "With: persons");
 
-@command = ( $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CAR=$cars" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CAR=$cars" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
 ok ($stderr =~ m{\[WR07\]} && $stderr =~ m{'CHILD'},
@@ -161,7 +161,7 @@ is_deeply (cut_into_table ($stdout),
            $person_and_car_results,
            "With: persons and cars");
 
-@command = ( $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CAR=$cars", "CHILDX=$children" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CAR=$cars", "CHILDX=$children" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
 ok ($stderr =~ m{\[WR03\]} && $stderr =~ m{'CHILDX'},
@@ -173,7 +173,7 @@ is_deeply (cut_into_table ($stdout),
            $person_and_car_results,
            "With: persons and cars");
 
-@command = ( $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CAR=$cars", "CHILD=$children" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CAR=$cars", "CHILD=$children" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
 is (row_count ($stdout), 4, msgcmd ("Rows count for ", @command));
@@ -188,7 +188,7 @@ is_deeply (cut_into_table ($stdout),
            ],
            "With: persons, cars and children");
 
-@command = ( $prg, '-config', $config_file, '-inputs', "CAR=$cars", "CHILD=$children" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "CAR=$cars", "CHILD=$children" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
 is (row_count ($stdout), 4, msgcmd ("Rows count for ", @command));
@@ -203,7 +203,7 @@ is_deeply (cut_into_table ($stdout),
            ],
            "With: cars and children");
 
-@command = ( $prg, '-config', $config_file, '-inputs', "CHILD=$children", "CAR=$cars", "PERSON=$persons" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "CHILD=$children", "CAR=$cars", "PERSON=$persons" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
 is (row_count ($stdout), 3, msgcmd ("Rows count for ", @command));
@@ -218,7 +218,7 @@ is_deeply (cut_into_table ($stdout),
            "With: children, person and car");
 
 $config_file = File::Spec->catfile (test_file(), 'error-unknown-matching-column.cfg');
-@command = ( $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CAR=$cars", "CHILD=$children" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CAR=$cars", "CHILD=$children" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
 ok ($stderr =~ m{\[WR05\]} && $stderr =~ m{'ParentX'},
@@ -231,7 +231,7 @@ is_deeply (cut_into_table ($stdout),
            "With: persons and cars");
 
 $config_file = File::Spec->catfile (test_file(), 'error-unknown-primary.cfg');
-@command = ( $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CAR=$cars", "CHILD=$children" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CAR=$cars", "CHILD=$children" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_bad_exit_code ($exit_code, @command);
 ok ($stderr =~ m{\[WR05\]} && $stderr =~ m{'SurnameX'},
@@ -240,7 +240,7 @@ ok ($stderr =~ m{\[ER03\]} && $stderr =~ m{'PERSON'},
     msgcmd ("Expected error ER03 ('PERSON') for ", @command));
 
 $config_file = File::Spec->catfile (test_file(), 'error-unknown-columns.cfg');
-@command = ( $prg, '-config', $config_file, '-inputs', "CHILD=$children", "CAR=$cars", "PERSON=$persons" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "CHILD=$children", "CAR=$cars", "PERSON=$persons" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
 is (row_count ($stdout), 3, msgcmd ("Rows count for ", @command));
@@ -255,7 +255,7 @@ is_deeply (cut_into_table ($stdout),
            "Unknown columns: children, person and car");
 
 $config_file = File::Spec->catfile (test_file(), 'error-no-columns.cfg');
-@command = ( $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CHILD=$children", "CAR=$cars");
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "PERSON=$persons", "CHILD=$children", "CAR=$cars");
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
 is (row_count ($stdout), undef, msgcmd ("Rows count for ", @command));
@@ -271,7 +271,7 @@ unless (exists $ENV{COMBINE_SHEETS_EXT_PATH}) {
 }
 
 $config_file = File::Spec->catfile (test_file(), 'error-missing-output-column.cfg');
-@command = ( $prg, '-config', $config_file, '-inputs', "PERSON=$persons" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "PERSON=$persons" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
 ok ($stderr =~ m{\[WR10\]} && $stderr =~ m{'count-chars'},
@@ -289,7 +289,7 @@ is_deeply (cut_into_table ($stdout),
            "With: persons and count-chars");
 
 $config_file = File::Spec->catfile (test_file(), 'config-with-calculated-columns.cfg');
-@command = ( $prg, '-config', $config_file, '-inputs', "PERSON=$persons" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "PERSON=$persons" );
 $ENV{PERL5LIB} .= ':./t';
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
@@ -306,7 +306,7 @@ is_deeply (cut_into_table ($stdout),
            "With: persons and count-chars(2)");
 
 $config_file = File::Spec->catfile (test_file(), 'error-bad-perl.cfg');
-@command = ( $prg, '-config', $config_file, '-inputs', "PERSON=$persons" );
+@command = ( $^X, $prg, '-config', $config_file, '-inputs', "PERSON=$persons" );
 $ENV{PERL5LIB} .= ':./t';
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
 check_good_exit_code ($exit_code, @command);
@@ -343,7 +343,7 @@ my $paintings = File::Spec->catfile (test_file(), 'paintings.tsv');
 my $drinks    = File::Spec->catfile (test_file(), 'drinks.tsv');
 my $food      = File::Spec->catfile (test_file(), 'foods.tsv');
 
-@command = ( $prg, '-config', $config_file, '-inputs',
+@command = ( $^X, $prg, '-config', $config_file, '-inputs',
              "HOUSE=$houses",
              "FUR=$furniture",
              "PAINT=$paintings",
@@ -376,7 +376,7 @@ $config_file = File::Spec->catfile (test_file(), 'books_to_authors.cfg');
 my $books   = File::Spec->catfile (test_file(), 'books.tsv');
 my $authors = File::Spec->catfile (test_file(), 'authors.tsv');
 
-@command = ( $prg, '-config', $config_file, '-inputs',
+@command = ( $^X, $prg, '-config', $config_file, '-inputs',
              "BOOK=$books",
              "AUTHOR=$authors" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);
@@ -395,7 +395,7 @@ is_deeply (cut_into_table ($stdout),
            ],
            "With: books and authors");
 
-@command = ( $prg, '-config', $config_file, '-inputs',
+@command = ( $^X, $prg, '-config', $config_file, '-inputs',
              "AUTHOR=$authors",
              "BOOK=$books" );
 ($stdout, $stderr, $success, $exit_code) = capture_exec (@command);

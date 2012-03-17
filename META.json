@@ -62,7 +62,7 @@
       },
       "homepage" : "http://search.cpan.org/dist/App-combinesheets"
    },
-   "version" : "0.2_7",
+   "version" : "0.2_8",
    "x_Dist_Zilla" : {
       "plugins" : [
          {
