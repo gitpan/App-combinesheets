@@ -46,7 +46,6 @@
             "English" : "0",
             "File::Basename" : "0",
             "File::Find" : "0",
-            "File::Which" : "0",
             "FindBin" : "0",
             "IO::CaptureOutput" : "0",
             "Test::More" : "0",
@@ -62,7 +61,7 @@
       },
       "homepage" : "http://search.cpan.org/dist/App-combinesheets"
    },
-   "version" : "0.2_8",
+   "version" : "0.2_9",
    "x_Dist_Zilla" : {
       "plugins" : [
          {

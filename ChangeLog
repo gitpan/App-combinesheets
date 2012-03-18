@@ -1,3 +1,11 @@
+2012-03-18  Martin Senger  <martin.senger&#64;gmail.com>
+
+	* Version 0.2_9 released (tests completely re-created; not anymore
+	calling external Perl script).
+
+	* Fixed the case where App::combinesheets->execute() is called
+	several times.
+
 2012-03-17  Martin Senger  <martin.senger&#64;gmail.com>
 
 	* Version 0.2_8 (still fixing problems with tests)

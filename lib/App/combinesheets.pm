@@ -11,7 +11,7 @@ use strict;
 
 package App::combinesheets;
 {
-  $App::combinesheets::VERSION = '0.2_8';
+  $App::combinesheets::VERSION = '0.2_9';
 }
 use base 'App::Cmd::Simple';
 
@@ -92,7 +92,7 @@ sub validate_args {
     my $pod_where = pod_where ({-inc => 1}, __PACKAGE__);
     if ($opt->h) {
         print "Usage: " . $self->usage();
-        exit (0);
+        if ($^S) { die "Okay\n" } else { exit (0) };
     }
     pod2usage (-input => $pod_where, -verbose => 1, -exitval => 0) if $opt->help;
     pod2usage (-input => $pod_where, -verbose => 2, -exitval => 0) if $opt->man;
@@ -103,7 +103,7 @@ sub validate_args {
         no strict;    # because the $VERSION will be added only when
         no warnings;  # the distribution is fully built up
         print "$VERSION\n";
-        exit(0);
+        if ($^S) { die "Okay\n" } else { exit (0) };
     }
 
     # check required command-line arguments
@@ -122,9 +122,11 @@ sub usage_error {
 # ----------------------------------------------------------------
 # The main part
 # ----------------------------------------------------------------
-my $inputs = {};     # keys are input IDs
+my $inputs;     # keys are input IDs
 sub execute {
     my ($self, $opt, $args) = @_;
+
+    $inputs = {};   # just in case somebody calls execute() twice
 
     my @opt_inputs = split (m{,}, join (',', @{ $opt->inputs }));
     my $opt_outfile = $opt->outfile;
@@ -696,7 +698,7 @@ App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 =head1 VERSION
 
-version 0.2_8
+version 0.2_9
 
 =head1 SYNOPSIS
 

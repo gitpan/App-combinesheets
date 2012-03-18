@@ -16,7 +16,6 @@ my %WriteMakefileArgs = (
     "English" => 0,
     "File::Basename" => 0,
     "File::Find" => 0,
-    "File::Which" => 0,
     "FindBin" => 0,
     "IO::CaptureOutput" => 0,
     "Test::More" => 0,
@@ -49,7 +48,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.2_8",
+  "VERSION" => "0.2_9",
   "test" => {
     "TESTS" => "t/*.t"
   }
