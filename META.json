@@ -4,7 +4,7 @@
       "Martin Senger <martin.senger@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300009, CPAN::Meta::Converter version 2.120530",
+   "generated_by" : "Dist::Zilla version 4.300009, CPAN::Meta::Converter version 2.120630",
    "license" : [
       "perl_5"
    ],
@@ -61,7 +61,7 @@
       },
       "homepage" : "http://search.cpan.org/dist/App-combinesheets"
    },
-   "version" : "0.2_9",
+   "version" : "0.2_10",
    "x_Dist_Zilla" : {
       "plugins" : [
          {

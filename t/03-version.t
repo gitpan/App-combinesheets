@@ -8,6 +8,6 @@ BEGIN { require "t/commons.pl"; }
 # test for the simplest invocation (using the --version option)
 @command = ( '-version' );
 ($stdout, $stderr) = my_run (@command);
-is ($stderr, '', msgcmd ("Unexpected STDERR output for ", @command));
+ok ($stdout ne '', "Version missing");
 
 __END__
