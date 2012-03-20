@@ -41,7 +41,7 @@ requires:
 resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=App-combinesheets
   homepage: http://search.cpan.org/dist/App-combinesheets
-version: 0.2_10
+version: 0.2.11
 x_Dist_Zilla:
   plugins:
     -
