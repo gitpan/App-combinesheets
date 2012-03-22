@@ -11,7 +11,7 @@ use strict;
 
 package App::combinesheets;
 {
-  $App::combinesheets::VERSION = '0.2.11';
+  $App::combinesheets::VERSION = '0.2.12';
 }
 use base 'App::Cmd::Simple';
 
@@ -22,6 +22,7 @@ use Text::CSV::Simple;
 use Text::CSV_XS;
 use File::Spec;
 use File::Temp;
+use File::Which;
 use File::BOM qw( :all );
 use Algorithm::Loops qw( NestedLoops );
 use autouse 'IO::CaptureOutput' => qw(capture_exec);
@@ -511,7 +512,7 @@ sub find_prog {
     }
 
     # 2) try to find it on system PATH
-    $full_name = `which $prgname`;
+    $full_name = which ($prgname);
     if ($full_name ) {
         chomp $full_name;
         return $full_name;
@@ -698,7 +699,7 @@ App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 =head1 VERSION
 
-version 0.2.11
+version 0.2.12
 
 =head1 SYNOPSIS
 

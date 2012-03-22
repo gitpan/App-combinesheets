@@ -1,3 +1,11 @@
+2012-03-22  Martin Senger  <martin.senger&#64;gmail.com>
+
+	* Version 0.2.12 released.
+
+2012-03-21  Martin Senger  <martin.senger&#64;gmail.com>
+
+	* Replaced `which` by File::Which (which).
+
 2012-03-20  Martin Senger  <martin.senger&#64;gmail.com>
 
 	* Version 0.2.11 released (all tests, finally, passed).

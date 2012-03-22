@@ -8,6 +8,7 @@ Makefile.PL
 README
 bin/combinesheets
 dist.ini
+docs/App-combinesheets.html
 examples/Airport.pm
 examples/age.sh
 examples/cars.cfg

@@ -37,6 +37,7 @@ my %WriteMakefileArgs = (
     "File::BOM" => 0,
     "File::Spec" => 0,
     "File::Temp" => 0,
+    "File::Which" => 0,
     "IO::CaptureOutput" => 0,
     "Pod::Find" => 0,
     "Pod::Usage" => 0,
@@ -48,7 +49,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.2.11",
+  "VERSION" => "0.2.12",
   "test" => {
     "TESTS" => "t/*.t"
   }
