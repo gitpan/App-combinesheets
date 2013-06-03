@@ -10,10 +10,8 @@
 # -----------------------------------------------------------------
 use warnings;
 use strict;
-package main;
-{
-  $main::VERSION = '0.2.12';
-}  # this is here to make Dist:Dzilla's PkgVersion happy
+
+our $VERSION = '0.2.14'; # VERSION
 
 use App::combinesheets;
 App::combinesheets->run();
@@ -27,7 +25,7 @@ App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 =head1 VERSION
 
-version 0.2.12
+version 0.2.14
 
 =head1 AUTHOR
 
@@ -35,7 +33,7 @@ Martin Senger <martin.senger@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Martin Senger, CBRC - KAUST (Computational Biology Research Center - King Abdullah University of Science and Technology) All Rights Reserved..
+This software is copyright (c) 2013 by Martin Senger, CBRC - KAUST (Computational Biology Research Center - King Abdullah University of Science and Technology) All Rights Reserved..
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

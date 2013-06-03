@@ -6,8 +6,8 @@ META.json
 META.yml
 Makefile.PL
 README
+README.md
 bin/combinesheets
-dist.ini
 docs/App-combinesheets.html
 examples/Airport.pm
 examples/age.sh
@@ -54,8 +54,6 @@ t/data/houses.tsv
 t/data/paintings.tsv
 t/data/persons.tsv
 t/data/things.cfg
-t/release-distmeta.t
 t/release-eol.t
 t/release-no-tabs.t
 t/release-pod-syntax.t
-this-pod-2-html.pl

@@ -2,7 +2,7 @@ NAME
     App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 VERSION
-    version 0.2.12
+    version 0.2.14
 
 SYNOPSIS
        combinesheets -h
@@ -581,7 +581,7 @@ AUTHOR
     Martin Senger <martin.senger@gmail.com>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2012 by Martin Senger, CBRC - KAUST
+    This software is copyright (c) 2013 by Martin Senger, CBRC - KAUST
     (Computational Biology Research Center - King Abdullah University of
     Science and Technology) All Rights Reserved..
 

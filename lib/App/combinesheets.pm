@@ -10,9 +10,9 @@ use warnings;
 use strict;
 
 package App::combinesheets;
-{
-  $App::combinesheets::VERSION = '0.2.12';
-}
+
+our $VERSION = '0.2.14'; # VERSION
+
 use base 'App::Cmd::Simple';
 
 use Pod::Usage;
@@ -600,10 +600,9 @@ sub read_tsv_headers {
 # ----------------------------------------------------------------
 sub read_first_line {
     my ($file) = @_;
-#    local *FH;
     my $fh;
-    open_bom ($fh, $file) or open ($fh, '<', $file)
-        or die "[ER00] Cannot read input file $file: $!\n";
+    open_bom ($fh, $file); # or open ($fh, '<', $file)
+        # or die "[ER00] Cannot read input file $file: $!\n";
     my $line = <$fh>;          # read just one line
     close $fh;
     $line =~ s{(\r|\n)+$}{};   # remove newlines of any kind
@@ -643,8 +642,8 @@ sub read_content {
 sub read_tsv_content {
     my ($file, $matched_index) = @_;
     my $fh;
-    open_bom ($fh, $file) or open ($fh, '<', $file)
-        or die "[ER00] Cannot read input file $file: $!\n";
+    open_bom ($fh, $file); # or open ($fh, '<', $file)
+        # or die "[ER00] Cannot read input file $file: $!\n";
     my $content = {};
     my $line_count = 0;
     while (my $line = <$fh>) {
@@ -668,23 +667,37 @@ sub read_csv_content {
     my $content = {};
 
     # create a CSV parser; any error in reading input will be fatal
-    my $parser = Text::CSV::Simple->new({
+    my $csv = Text::CSV_XS->new ({
         allow_loose_quotes => 1,
         escape_char        => "\\",
-                                        });
-    $parser->add_trigger (on_failure => sub {
-        my ($self, $csv) = @_;
-        warn "[WR09] Possible a wrong or not-readable input file '$file'\n";
-        exit (1);
-                          });
-    $parser->add_trigger (after_parse => sub {
-        my ($self, $data) = @_;
-        return if $count_lines++ == 0;   # headers are ignored
-        $content->{ $data->[$matched_index] } = [] unless $content->{ $data->[$matched_index] };
-        push (@{ $content->{ $data->[$matched_index] } }, $data);
-                          });
+        auto_diag          => 1,
+                                 });
+
+    # read the CSV input
+    open_bom (my $fh, $file);
+    while (<$fh>) {
+        if ($csv->parse ($_)) {
+            next if $count_lines++ == 0;   # headers are ignored
+            my @data = $csv->fields;
+            if (@data) {
+                push (@{ $content->{ $data[$matched_index] } }, \@data);
+            }
+        } else {
+            my $err = $csv->error_input;
+            warn "[WR09] Possible a wrong or not-readable input file '$file': $err\n";
+            exit (1);
+        }
+    }
+
+    # $parser->add_trigger (after_parse => sub {
+    #     my ($self, $data) = @_;
+    #     return if $count_lines++ == 0;   # headers are ignored
+    #     $content->{ $data->[$matched_index] } = [] unless $content->{ $data->[$matched_index] };
+    #     push (@{ $content->{ $data->[$matched_index] } }, $data);
+    #                       });
     # read CSV input (the result is not used here; everything is done in triggers)
-    $parser->read_file ($file);
+    # $parser->read_file ($file);
+
     return $content;
 }
 1;
@@ -699,7 +712,7 @@ App::combinesheets - command-line tool merging CSV and TSV spreadsheets
 
 =head1 VERSION
 
-version 0.2.12
+version 0.2.14
 
 =head1 SYNOPSIS
 
@@ -1353,7 +1366,7 @@ Martin Senger <martin.senger@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Martin Senger, CBRC - KAUST (Computational Biology Research Center - King Abdullah University of Science and Technology) All Rights Reserved..
+This software is copyright (c) 2013 by Martin Senger, CBRC - KAUST (Computational Biology Research Center - King Abdullah University of Science and Technology) All Rights Reserved..
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
